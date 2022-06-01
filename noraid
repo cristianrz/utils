@@ -1,0 +1,90 @@
+#!/bin/sh
+
+set -eu
+
+data="$(awk '/^data / { print $2}' /etc/noraid.conf)"
+data_content="$(awk '/^content / { print $2}' /etc/noraid.conf)"
+touch "$data_content"
+
+parity="$(awk '/^parity / { print $2}' /etc/noraid.conf)"
+parity_content="$parity"/noraid.content
+mkdir -p "$parity"
+touch "$parity_content"
+
+_diff(){
+	cd "$data"
+	find . -type f ! -name noraid.content -printf "data;%p;%s%t\n" > "$data_content"
+
+	cd "$parity"
+	find . -type f ! -name noraid.content -printf "parity;%p;%s%t\n" > "$parity_content"
+
+	cat "$parity_content" "$data_content" | awk -F';' '
+		$1 == "parity" {
+			status[$2] = "removed"
+			time[$2] = $3
+		}
+
+		$1 == "data" {
+			if (status[$2] == "") status[$2] = "added"
+			else if (time[$2] == $3) status[$2] = "same"
+			else status[$2] = "modified"
+		}
+
+		END {
+			print ""
+			for (key in status) {
+				if (status[key] != "same") print status[key] " " key
+			}
+		}
+	'
+
+	#diff -qr "$parity" "$data" | awk -v parity="$parity" -v data="$data" '
+	#$1 == "Only" && $0 ~ parity":" { gsub(/^[^:]*: /,""); print "removed " $0; next }
+	#$1 == "Only" && $0 ~ data":" { gsub(/^[^:]*: /,""); print "added " $0; next }
+	#$1 == "Files" { gsub(/^Files /,""); gsub(/ and \/.*/,""); print "modified " $0 }
+	#'
+}
+
+_help(){
+	cat >&2 << EOF 
+noraid COMMAND ...
+
+Folder mirroning
+
+  diff        Shows differences between data and parity
+  sync        Mirrors data to parity
+  fix [FILE]  Restore a file from parity to data
+
+EOF
+	exit 1
+}
+
+case "$#" in
+	1) : ;;
+	2) : ;;
+	*) _help ;;
+esac
+
+case "$1" in
+diff)
+	_diff
+	;;
+sync)
+	printf "These changes will be done:\n\n"
+	"$0" diff
+	printf '\nAre you sure you want to continue? (y/N): '
+	read -r continue
+	case "$continue" in
+		y|Y)
+			rsync --info=progress2 -a --delete "${data}/" "$parity" || true
+			;;
+	esac
+	;;
+fix)
+	rsync -Pav "$parity/$2" "$data"
+	;;
+*)
+	_help
+	;;
+
+esac
