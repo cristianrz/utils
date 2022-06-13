@@ -31,3 +31,5 @@ Services can be created inside `$HOME/.config/init.d`. They should be
 executables that can be called with arguments `start`, `stop`, `restart` and
 `status`.
 
+All enabled services can be stopped with `profileshutdown`.
+
