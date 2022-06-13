@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 RC="$HOME/.config/rc.d"
 INIT="$HOME/.config/init.d"
 
