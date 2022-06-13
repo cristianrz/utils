@@ -4,8 +4,5 @@ set -eu
 service_dir="$HOME/.config/rc.d"
 
 for service in "$service_dir"/*; do
-	short="$(basename "$service")"
-	#echo "Starting service \"$short\"..."
 	"$service" start
-	#echo "Service \"$short\" started."
 done
