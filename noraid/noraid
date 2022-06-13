@@ -12,28 +12,34 @@ mkdir -p "$parity"
 touch "$parity_content"
 
 _diff(){
-	cd "$data"
-	find . -type f ! -name noraid.content -printf "data;%p;%s%t\n" > "$data_content"
+	{
+		cd "$parity"
+		find . -type f ! -name noraid.content -printf "parity?%p?%s%TY%Tm%Td%TH%TM%TS\n"
 
-	cd "$parity"
-	find . -type f ! -name noraid.content -printf "parity;%p;%s%t\n" > "$parity_content"
-
-	cat "$parity_content" "$data_content" | awk -F';' '
+		cd "$data"
+		find . -type f ! -name noraid.content -printf "data?%p?%s%TY%Tm%Td%TH%TM%TS\n"
+	} | awk -F'?' '
 		$1 == "parity" {
 			status[$2] = "removed"
 			time[$2] = $3
 		}
 
 		$1 == "data" {
-			if (status[$2] == "") status[$2] = "added"
-			else if (time[$2] == $3) status[$2] = "same"
-			else status[$2] = "modified"
+			if (status[$2] == "") {
+				status[$2] = "added"
+				print "added " $2
+			} else if (time[$2] == $3) {
+				status[$2] = "same"
+			} else {
+				status[$2] = "modified"
+				print "modified " $2
+			}
 		}
 
 		END {
 			print ""
 			for (key in status) {
-				if (status[key] != "same") print status[key] " " key
+				if (status[key] == "removed") print "removed " key
 			}
 		}
 	'

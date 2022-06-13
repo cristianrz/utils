@@ -1,0 +1,22 @@
+#!/bin/sh
+
+RC="$HOME/.config/rc.d"
+INIT="$HOME/.config/init.d"
+
+case "$1" in
+	start|status|stop|restart) "$INIT"/"$2" "$1" ;;
+	enable) 
+		cd "$RC"
+		ln -sv ../init.d/"$2" "$2"
+		;;
+	disable)
+		cd "$RC"
+		rm -fv "$RC"/"$2"
+		;;
+	*)
+		echo "Usage: profilectl {start|stop|restart|status}"
+		exit 1
+		;;
+esac
+
+

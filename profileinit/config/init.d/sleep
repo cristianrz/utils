@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -eu
+
+SLEEP_PID_FILE=/run/user/$(id -u)/sleep.pid
+
+. /lib/lsb/init-functions
+
+sleep_start(){
+	sleep 999999999 &
+	echo "$!" > "$SLEEP_PID_FILE"
+}
+
+case "$1" in
+	start)
+		echo "Starting sleep daemon"
+		if [ -s "$SLEEP_PID_FILE" ]; then
+			echo "apparently already running"
+			exit 0
+		fi
+		sleep_start
+		;;
+	stop)
+		echo "Stopping sleep daemon"
+		kill -15 "$(cat "$SLEEP_PID_FILE")"
+		rm -f "$SLEEP_PID_FILE"
+		;;
+	restart)
+		"$0" stop
+		"$0" start
+		;;
+	status)
+		if [ -s "$SLEEP_PID_FILE" ] && ps -p "$(cat "$SLEEP_PID_FILE" 2>&1)" >/dev/null 2>&1; then
+			echo sleep is running
+		else
+			echo sleep is not running
+		fi
+		;;
+	*)
+		echo "Usage: /etc/init.d/rsync {start|stop|restart|status}"
+		exit 1
+		;;
+esac
+	
