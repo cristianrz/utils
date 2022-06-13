@@ -4,8 +4,6 @@ set -eu
 
 SLEEP_PID_FILE=/run/user/$(id -u)/sleep.pid
 
-. /lib/lsb/init-functions
-
 sleep_start(){
 	sleep 999999999 &
 	echo "$!" > "$SLEEP_PID_FILE"
@@ -22,8 +20,11 @@ case "$1" in
 		;;
 	stop)
 		echo "Stopping sleep daemon"
-		kill -15 "$(cat "$SLEEP_PID_FILE")"
-		rm -f "$SLEEP_PID_FILE"
+
+		if [ -s "$SLEEP_PID_FILE" ]; then
+			kill -15 "$(cat "$SLEEP_PID_FILE")"
+			rm -f "$SLEEP_PID_FILE"
+		fi
 		;;
 	restart)
 		"$0" stop
