@@ -19,7 +19,7 @@ echo profileinit >> "$HOME/.profile"
 now everytime you log in, `profiled` will run all your services inside
 `$HOME/.config/rc.d`.
 
-Services can be operating with:
+Services can be operated with:
 
 * `profilectl start SERVICE`
 * `profilectl stop SERVICE`
@@ -28,5 +28,6 @@ Services can be operating with:
 * `profilectl disable SERVICE`
 
 Services can be created inside `$HOME/.config/init.d`. They should be
-executables that can be called with arguments start, stop, restart and status.
+executables that can be called with arguments `start`, `stop`, `restart` and
+`status`.
 
