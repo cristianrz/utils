@@ -5,7 +5,7 @@ set -eu
 PROFILECRON_PID_FILE=/run/user/$(id -u)/profilecron.pid
 
 profilecron_start(){
-	profilecron &
+	profilecron >/dev/null 2>&1 &
 	echo "$!" > "$PROFILECRON_PID_FILE"
 }
 
