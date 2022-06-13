@@ -1,0 +1,45 @@
+#!/bin/sh
+
+set -eu
+
+PROFILECRON_PID_FILE=/run/user/$(id -u)/profilecron.pid
+
+profilecron_start(){
+	profilecron &
+	echo "$!" > "$PROFILECRON_PID_FILE"
+}
+
+case "$1" in
+	start)
+		echo "Starting profilecron daemon"
+		if [ -s "$PROFILECRON_PID_FILE" ]; then
+			echo "apparently already running"
+			exit 0
+		fi
+		profilecron_start
+		;;
+	stop)
+		echo "Stopping profilecron daemon"
+
+		if [ -s "$PROFILECRON_PID_FILE" ]; then
+			kill -15 "$(cat "$PROFILECRON_PID_FILE")"
+			rm -f "$PROFILECRON_PID_FILE"
+		fi
+		;;
+	restart)
+		"$0" stop
+		"$0" start
+		;;
+	status)
+		if [ -s "$PROFILECRON_PID_FILE" ] && ps -p "$(cat "$PROFILECRON_PID_FILE" 2>&1)" >/dev/null 2>&1; then
+			echo profilecron is running
+		else
+			echo profilecron is not running
+		fi
+		;;
+	*)
+		echo "Usage: /etc/init.d/rsync {start|stop|restart|status}"
+		exit 1
+		;;
+esac
+	
