@@ -1,8 +1,8 @@
 # profiled
 
-init-like functionality for simple environments
+NetBSD-style service manager for small environments.
 
-##  Getting started
+## Installing
 
 ```sh
 make install
@@ -10,26 +10,26 @@ make install
 
 ## Usage
 
-Put `profileinit` in your shellrc:
+1. Install all required services in `etc/rc.d`. Service need to be executables
+that accept at least 4 arguments: start, stop, restart and status.
+2. Define the services to be started in `etc/rc.conf`. To enable
+`example-service`, add `example-service=YES`.
+3. Start all services with `bin/profileinit`. If you want services to start on
+login on chroots or similar:
 
 ```
 echo profileinit >> "$HOME/.profile"
 ```
 
-now everytime you log in, `profiled` will run all your services inside
-`$HOME/.config/rc.d`.
-
 Services can be operated with:
 
-* `profilectl start SERVICE`
-* `profilectl stop SERVICE`
-* `profilectl restart SERVICE`
-* `profilectl enable SERVICE`
-* `profilectl disable SERVICE`
+* `profilectl start   example-service`
+* `profilectl stop    example-service`
+* `profilectl restart example-service`
+* `profilectl enable  example-service`
+* `profilectl disable example-service`
 
-Services can be created inside `$HOME/.config/init.d`. They should be
-executables that can be called with arguments `start`, `stop`, `restart` and
-`status`.
+Or alternatively with `etc/rc.d/example-service [COMMAND]`
 
-All enabled services can be stopped with `profileshutdown`.
+All running services can be stopped with `profileshutdown`.
 
