@@ -1,0 +1,8 @@
+#!/bin/sh
+
+ROOT="$(
+	cd "$(dirname "$0")"/..
+	pwd
+)" export ROOT
+
+"$ROOT/etc/rc.shutdown"

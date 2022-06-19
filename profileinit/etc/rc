@@ -1,16 +1,9 @@
 #!/bin/sh
 set -eu
 
-HERE="$(
-	cd "$(dirname "$0")"
-	pwd
-)"
+service_dir="$ROOT/etc/rc.d"
 
-service_dir="$HERE/rc.d"
-
-mkdir -p "$service_dir"
-
-. "$HERE/rc.conf"
+. "$ROOT/etc/rc.conf"
 
 find "$service_dir" -type f | sort | while read -r service; do
 	service_short="$(basename "$service")"
@@ -20,8 +13,8 @@ find "$service_dir" -type f | sort | while read -r service; do
 	esac
 done
 
-if [ -f "$HERE/rc.local" ]; then
-	"$HERE/rc.local"
+if [ -f "$ROOT/etc/rc.local" ]; then
+	"$ROOT/etc/rc.local"
 fi
 
 exit 0
