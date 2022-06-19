@@ -2,6 +2,15 @@
 
 NetBSD-style service manager for small environments.
 
+`profileinit` allows service management in places where:
+
+* can't use native `init` (e.g. `chroot`)
+* native `init` is a pain (e.g. `systemd`, Windows)
+* want to manage simple services as a user 
+
+I mainly use it to manage services on systems where I need to deal with
+`systemd` and on Windows without admin privileges using BusyBox.
+
 ## Installing
 
 ```sh
