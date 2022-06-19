@@ -2,7 +2,12 @@
 
 set -eu
 
-SLEEP_PID_FILE=/run/user/$(id -u)/sleep.pid
+HERE="$(
+	cd "$(dirname "$0")"
+	pwd
+)"
+
+SLEEP_PID_FILE="$HERE/../../var/run/profileinit/sleep.pid"
 
 sleep_start(){
 	sleep 999999999 &
@@ -33,8 +38,10 @@ case "$1" in
 	status)
 		if [ -s "$SLEEP_PID_FILE" ] && kill -0 "$(cat "$SLEEP_PID_FILE" 2>&1)" >/dev/null 2>&1; then
 			echo sleep is running
+			exit 0
 		else
 			echo sleep is not running
+			exit 1
 		fi
 		;;
 	*)

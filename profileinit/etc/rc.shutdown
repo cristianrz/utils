@@ -1,0 +1,21 @@
+#!/bin/sh
+set -eu
+
+HERE="$(
+	cd "$(dirname "$0")"
+	pwd
+)"
+
+service_dir="$HERE/rc.d"
+
+mkdir -p "$service_dir"
+
+. "$HERE/rc.conf"
+
+find "$service_dir" -type f | sort -r | while read -r service; do
+	if "$service" status; then
+		"$service" stop
+	fi
+done
+
+exit 0

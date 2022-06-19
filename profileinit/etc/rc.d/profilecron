@@ -2,7 +2,12 @@
 
 set -eu
 
-PROFILECRON_PID_FILE=/run/user/$(id -u)/profilecron.pid
+HERE="$(
+	cd "$(dirname "$0")"
+	pwd
+)"
+
+PROFILECRON_PID_FILE="$HERE/../../var/run/profileinit/profilecron.pid"
 
 profilecron_start(){
 	profilecron >/dev/null 2>&1 &
@@ -33,8 +38,10 @@ case "$1" in
 	status)
 		if [ -s "$PROFILECRON_PID_FILE" ] && kill -0 "$(cat "$PROFILECRON_PID_FILE" 2>&1)" >/dev/null 2>&1; then
 			echo profilecron is running
+			exit 0
 		else
 			echo profilecron is not running
+			exit 1
 		fi
 		;;
 	*)
