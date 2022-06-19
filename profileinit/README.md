@@ -1,4 +1,4 @@
-# profiled
+# profileinit
 
 NetBSD-style service manager for small environments.
 
