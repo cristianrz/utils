@@ -2,24 +2,58 @@
 
 set -eu
 
-HERE="$( cd "$(dirname "$0")"; pwd)"
+HERE="$(
+	cd "$(dirname "$0")"
+	pwd
+)"
 
 RC="$HERE/../etc/rc.d"
+RC_CONF="$HERE/../etc/rc.conf"
 
 case "$1" in
-	start|status|stop|restart) "$RC"/"$2" "$1" ;;
-	enable) 
-		cd "$RC"
-		ln -sv ../init.d/"$2" "$2"
-		;;
-	disable)
-		cd "$RC"
-		rm -fv "$RC"/"$2"
-		;;
-	*)
-		echo "Usage: profilectl {start|stop|restart|status}"
-		exit 1
-		;;
+start | status | stop | restart) "$RC"/"$2" "$1" ;;
+enable)
+	awk -F'=' -v service="$2" '
+			$1 == service {
+				print service "=YES"
+				done=1
+				next
+			}	
+
+			{ print }
+
+			END {
+				if (!done) {
+					print service "=YES"
+				}
+			}
+			
+		' "$RC_CONF" >"$RC_CONF".bak
+
+	mv "$RC_CONF".bak "$RC_CONF"
+	;;
+disable)
+	awk -F'=' -v service="$2" '
+			$1 == service {
+				print service "=NO"
+				done=1
+				next
+			}	
+
+			{ print }
+
+			END {
+				if (!done) {
+					print service "=NO"
+				}
+			}
+			
+		' "$RC_CONF" >"$RC_CONF".bak
+
+	mv "$RC_CONF".bak "$RC_CONF"
+	;;
+*)
+	echo "Usage: profilectl {start|stop|restart|status|enable|disable}"
+	exit 1
+	;;
 esac
-
-
