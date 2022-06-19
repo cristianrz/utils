@@ -33,3 +33,9 @@ Or alternatively with `etc/rc.d/example-service [COMMAND]`
 
 All running services can be stopped with `profileshutdown`.
 
+## What it doesn't do and will never do
+
+* Restart failed services
+* Dependencies (scripts in `rc.d` will always run serially in alphabetical
+order, you can play with that)
+
