@@ -1,7 +1,14 @@
 #!/bin/sh
 set -eu
 
-service_dir="$HOME/.config/rc.d"
+HERE="$(
+	cd "$(dirname "$0")"
+	pwd
+)"
+
+service_dir="$HERE/../../.config/rc.d"
+
+mkdir -p "$service_dir"
 
 for service in "$service_dir"/*; do
 	"$service" start

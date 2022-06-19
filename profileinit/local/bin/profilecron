@@ -10,6 +10,9 @@ match(){
 	[ "$1" -eq "$2" ]
 }
 
+HERE="$( cd "$(dirname "$0")"; pwd)"
+CONFIG="$HERE/../../.config"
+
 while true; do
 	min="$(date '+%M')"
 	hour="$(date '+%H')"
@@ -38,7 +41,7 @@ while true; do
 		shift
 
 		"$@" &
-	done < "$HOME"/.config/crontab
+	done < "$CONFIG/crontab
 
 	sleep 60
 done

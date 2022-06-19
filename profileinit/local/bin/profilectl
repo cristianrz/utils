@@ -2,8 +2,10 @@
 
 set -eu
 
-RC="$HOME/.config/rc.d"
-INIT="$HOME/.config/init.d"
+HERE="$( cd "$(dirname "$0")"; pwd)"
+
+RC="$HERE/../../.config/rc.d"
+INIT="$HERE/../../.config/init.d"
 
 case "$1" in
 	start|status|stop|restart) "$INIT"/"$2" "$1" ;;
