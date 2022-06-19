@@ -6,7 +6,9 @@ HERE="$(
 	pwd
 )"
 
-service_dir="$HERE/../../.config/rc.d"
+service_dir="$HERE/rc.d"
+
+echo "$service_dir"; exit
 
 mkdir -p "$service_dir"
 
