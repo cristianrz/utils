@@ -31,7 +31,7 @@ case "$1" in
 		"$0" start
 		;;
 	status)
-		if [ -s "$PROFILECRON_PID_FILE" ] && ps -p "$(cat "$PROFILECRON_PID_FILE" 2>&1)" >/dev/null 2>&1; then
+		if [ -s "$PROFILECRON_PID_FILE" ] && kill -0 "$(cat "$PROFILECRON_PID_FILE" 2>&1)" >/dev/null 2>&1; then
 			echo profilecron is running
 		else
 			echo profilecron is not running

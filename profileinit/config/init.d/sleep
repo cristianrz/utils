@@ -31,7 +31,7 @@ case "$1" in
 		"$0" start
 		;;
 	status)
-		if [ -s "$SLEEP_PID_FILE" ] && ps -p "$(cat "$SLEEP_PID_FILE" 2>&1)" >/dev/null 2>&1; then
+		if [ -s "$SLEEP_PID_FILE" ] && kill -0 "$(cat "$SLEEP_PID_FILE" 2>&1)" >/dev/null 2>&1; then
 			echo sleep is running
 		else
 			echo sleep is not running
