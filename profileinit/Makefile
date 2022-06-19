@@ -1,17 +1,22 @@
-PREFIX ?= $(HOME)
+PREFIX ?= $(HOME)/.local
 
 all:
 
 install:
-	mkdir -p $(PREFIX)/.local/bin
-	mkdir -p $(PREFIX)/.config/rc.d
-	mkdir -p $(PREFIX)/.config/init.d
-	cp -p local/bin/* $(PREFIX)/.local/bin
-	cp -rp config/* $(PREFIX)/.config
+	mkdir -p $(PREFIX)/bin
+	cp -r bin/* $(PREFIX)/bin
+	mkdir -p $(PREFIX)/etc
+	cp -r etc/* $(PREFIX)/etc
+
 
 uninstall:
-	rm -f $(PREFIX)/.config/init.d/profilecron
-	rm -f $(PREFIX)/.config/init.d/sleep
-	rm -f $(PREFIX)/.local/bin/profilectl
-	rm -f $(PREFIX)/.local/bin/profileinit
-	rm -f $(PREFIX)/.local/bin/profileshutdown
+	rm -f $(PREFIX)/bin/profilecron
+	rm -f $(PREFIX)/bin/profilectl
+	rm -f $(PREFIX)/bin/profileinit
+	rm -f $(PREFIX)/bin/profileshutdown
+	rm -f $(PREFIX)/etc/crontab
+	rm -f $(PREFIX)/etc/rc
+	rm -f $(PREFIX)/etc/rc.conf
+	rm -f $(PREFIX)/etc/rc.d/profilecron
+	rm -f $(PREFIX)/etc/rc.d/sleep
+	rm -f $(PREFIX)/etc/rc.shutdown
