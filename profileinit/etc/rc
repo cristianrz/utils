@@ -5,16 +5,19 @@ service_dir="$ROOT/etc/rc.d"
 
 . "$ROOT/etc/rc.conf"
 
-find "$service_dir" -type f | sort | while read -r service; do
+services="$(find "$service_dir" -type f | sort)"
+
+for service in $services; do
 	service_short="$(basename "$service")"
 
 	case "$(eval 'echo $'"$service_short")" in
-	YES) "$service" start ;;
+	YES)
+		set -- start
+		. "$service"
+		;;
 	esac
 done
 
 if [ -f "$ROOT/etc/rc.local" ]; then
-	"$ROOT/etc/rc.local"
+	. "$ROOT/etc/rc.local"
 fi
-
-exit 0

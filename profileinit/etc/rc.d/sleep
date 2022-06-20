@@ -7,10 +7,12 @@ HERE="$(
 	pwd
 )"
 
-SLEEP_PID_FILE="$HERE/../../var/run/profileinit/sleep.pid"
+ROOT="${ROOT:-$HERE/../..}"
+
+SLEEP_PID_FILE="$ROOT/var/run/profileinit/sleep.pid"
 
 sleep_start(){
-	sleep 999999999 &
+	sleep 99999 &
 	echo "$!" > "$SLEEP_PID_FILE"
 }
 
@@ -19,15 +21,15 @@ case "$1" in
 		echo "Starting sleep daemon"
 		if [ -s "$SLEEP_PID_FILE" ]; then
 			echo "apparently already running"
-			exit 0
+		else
+			sleep_start
 		fi
-		sleep_start
 		;;
 	stop)
 		echo "Stopping sleep daemon"
 
 		if [ -s "$SLEEP_PID_FILE" ]; then
-			kill -15 "$(cat "$SLEEP_PID_FILE")"
+			kill -15 "$(cat "$SLEEP_PID_FILE")" || true
 			rm -f "$SLEEP_PID_FILE"
 		fi
 		;;
@@ -38,7 +40,6 @@ case "$1" in
 	status)
 		if [ -s "$SLEEP_PID_FILE" ] && kill -0 "$(cat "$SLEEP_PID_FILE" 2>&1)" >/dev/null 2>&1; then
 			echo sleep is running
-			exit 0
 		else
 			echo sleep is not running
 			exit 1
