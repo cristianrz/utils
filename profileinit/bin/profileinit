@@ -2,14 +2,30 @@
 
 set -eu
 
-cd "$(dirname "$0")"/..
+IDIR="$PWD"
+
+dirname="$(dirname "$0")"
+cd "$dirname"/.. || exit 1
 ROOT="$PWD" export ROOT
 
 . "$ROOT/etc/rc"
 
-trap 'echo; . "$ROOT/etc/rc.shutdown"; exec "$ROOT/bin/profileinit"' 2
-trap 'echo; . "$ROOT/etc/rc.shutdown"' 10
+restart() {
+	stop
+	cd "$IDIR"
+	exec "$dirname/profileinit"
+}
 
-# unless we do this, it doesn't react to SIGUSR1
+stop() {
+	kill -15 "$sleep_pid"
+	. "$ROOT/etc/rc.shutdown"
+}
+
+trap 'restart' 2
+
+trap 'stop' 15
+
+# unless we do this, it doesn't react all signals
 sleep infinity &
+sleep_pid="$!"
 wait
