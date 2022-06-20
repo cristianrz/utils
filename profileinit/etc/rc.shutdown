@@ -1,11 +1,19 @@
 #!/bin/sh
 set -eu
 
+echo "Stopping all services"
+
+if [ -z "${ROOT-}" ]; then
+	cd "$(dirname "$0")/.."
+	ROOT="$PWD"
+fi
+
 service_dir="$ROOT/etc/rc.d"
 
-. "$ROOT/etc/rc.subr"
+# Should always be loaded already
+#. "$ROOT/etc/rc.subr"
 
 find "$service_dir" -type f | sort -r | while read -r service; do
-	"$service" stop
+	set -- stop
+	. "$service"
 done
-
