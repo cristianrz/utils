@@ -10,6 +10,13 @@ HERE="$(
 RC="$HERE/../etc/rc.d"
 RC_CONF="$HERE/../etc/rc.conf"
 
+case "$#" in
+0)
+	echo "usage: profilectl {start|status|stop|restart|enable|disable}"
+	exit 1
+	;;
+esac
+
 case "$1" in
 start | status | stop | restart) "$RC"/"$2" "$1" ;;
 enable)
