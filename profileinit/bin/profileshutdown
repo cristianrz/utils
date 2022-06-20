@@ -1,8 +1,16 @@
 #!/bin/sh
+#
+# Send signal 15 to profileinit
 
-ROOT="$(
-	cd "$(dirname "$0")"/..
-	pwd
-)" export ROOT
+set -eu
 
-"$ROOT/etc/rc.shutdown"
+cd "$(dirname "$0")"/..
+ROOT="$PWD" export ROOT
+
+PROFILEINIT="$(dirname "$0")/profileinit"
+
+ps -o "pid,args" -A | while read -r pid cmd args; do
+	case "$PROFILEINIT" in
+	"$cmd" | "$args") kill -15 "$pid" ;;
+	esac
+done
