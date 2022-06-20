@@ -3,10 +3,9 @@ set -eu
 
 service_dir="$ROOT/etc/rc.d"
 
-. "$ROOT/etc/rc.conf"
+. "$ROOT/etc/rc.subr"
 
 find "$service_dir" -type f | sort -r | while read -r service; do
 	"$service" stop
 done
 
-exit 0
