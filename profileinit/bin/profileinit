@@ -2,10 +2,8 @@
 
 set -eu
 
-ROOT="$(
-	cd "$(dirname "$0")"/..
-	pwd
-)" export ROOT
+cd "$(dirname "$0")"/..
+ROOT="$PWD" export ROOT
 
 . "$ROOT/etc/rc"
 
