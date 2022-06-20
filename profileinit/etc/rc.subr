@@ -1,12 +1,86 @@
 #!/bin/sh
 set -eu
 
-find_process(){
+find_process() {
 	ps -o "pid,args" -A | while read -r pid args; do
 		case "$args" in
-			"$*") echo "$pid" ;;
-			*) continue ;;
+		"$PEXP") echo "$pid" ;;
+		*) continue ;;
 		esac
 	done
 }
 
+rc_run() {
+	case "$1" in
+	start | stop | status | restart) rc_"$1" ;;
+	*)
+		echo "usage: $NAME {start|stop|restart|status}"
+		exit 1
+		;;
+	esac
+}
+
+rc_start() {
+	echo "starting $NAME daemon"
+
+	if [ -s "${PID_FILE-}" ]; then
+		echo "service $NAME already running"
+	else
+		pid="$(find_process)"
+
+		if [ -n "$pid" ]; then
+			echo "service $NAME apparently already running"
+		else
+			/bin/sh -c "$DAEMON"
+		fi
+	fi
+}
+
+# rc_stop pid_file command
+#
+rc_stop() {
+	echo "stopping $NAME daemon"
+
+	if [ -s "${PID_FILE-}" ]; then
+		xargs kill -15 <"$PID_FILE" || true
+		rm -f "$PID_FILE"
+	else
+		pid="$(find_process)"
+
+		if [ -z "$pid" ]; then
+			echo "service $NAME is not running"
+		else
+			set -- -15
+
+			for p in $pid; do
+				set -- "$@" "$p"
+			done
+
+			kill "$@" || true
+		fi
+	fi
+}
+
+rc_restart() {
+	rc_stop "$@"
+	rc_start "$@"
+}
+
+rc_status() {
+	pid="$(find_process)"
+
+	if [ -n "${PID_FILE-}" ]; then
+		case "${PID_FILE-}" in
+		pid) echo "service $NAME is running" ;;
+		*)
+			echo "service $NAME is not running"
+			return 1
+			;;
+		esac
+	elif [ -n "$pid" ]; then
+		echo "service $NAME is running"
+	else
+		echo "service $NAME is not running"
+		return 1
+	fi
+}

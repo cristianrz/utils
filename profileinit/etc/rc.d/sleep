@@ -2,60 +2,22 @@
 
 set -eu
 
-CMD="/bin/sleep 999"
-NAME="sleep"
-
+# find out what directory are we running from
 cd "$(dirname "$0")"
 HERE="$PWD"
-
 ROOT="${ROOT:-$HERE/../..}"
 
-PID_FILE="$ROOT/var/run/profileinit/$NAME.pid"
+# name for logging purposes
+NAME="sleep"
+
+# we don't use it
+#PID_FILE="$ROOT/var/run/$name.pid"
+
+# process to monitor
+PEXP="/bin/sh $ROOT/bin/sleepd -D"
+
+DAEMON="$ROOT/bin/sleepd"
 
 . "$ROOT/etc/rc.subr"
 
-process_start() {
-	$CMD &
-}
-
-PID="$(find_process "$CMD")"
-
-case "$1" in
-start)
-	echo "Starting $NAME daemon"
-
-	if [ -s "$PID_FILE" ] || [ -n "$PID" ]; then
-		echo "apparently already running"
-	else
-		process_start
-	fi
-	;;
-stop)
-	echo "Stopping $NAME daemon"
-
-	if [ -s "$PID_FILE" ]; then
-		kill -15 "$(cat "$PID_FILE")" || true
-		rm -f "$PID_FILE"
-	elif [ -n "$PID" ]; then
-		kill -15 "$PID" || true
-	else
-		echo "$NAME is not running"
-	fi
-	;;
-restart)
-	"$0" stop
-	"$0" start
-	;;
-status)
-	if [ -n "$PID" ]; then
-		echo "$NAME is running"
-	else
-		echo "$NAME is not running"
-		exit 1
-	fi
-	;;
-*)
-	echo "Usage: /etc/init.d/rsync {start|stop|restart|status}"
-	exit 1
-	;;
-esac
+rc_run "$1"
