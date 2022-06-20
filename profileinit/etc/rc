@@ -1,6 +1,11 @@
 #!/bin/sh
 set -eu
 
+if [ -z "${ROOT-}" ]; then
+	cd "$(dirname "$0")/.."
+	ROOT="$PWD"
+fi
+
 service_dir="$ROOT/etc/rc.d"
 
 . "$ROOT/etc/rc.conf"
