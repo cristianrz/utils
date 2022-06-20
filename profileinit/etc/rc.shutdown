@@ -6,9 +6,7 @@ service_dir="$ROOT/etc/rc.d"
 . "$ROOT/etc/rc.conf"
 
 find "$service_dir" -type f | sort -r | while read -r service; do
-	if "$service" status; then
-		"$service" stop
-	fi
+	"$service" stop
 done
 
 exit 0
