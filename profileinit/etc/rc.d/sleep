@@ -6,7 +6,7 @@ CMD="/bin/sleep 999"
 NAME="sleep"
 
 cd "$(dirname "$0")"
-HERE="$pwd"
+HERE="$PWD"
 
 ROOT="${ROOT:-$HERE/../..}"
 
