@@ -1,8 +1,14 @@
 #!/bin/sh
 
+set -eu
+
 ROOT="$(
 	cd "$(dirname "$0")"/..
 	pwd
 )" export ROOT
 
-"$ROOT/etc/rc"
+. "$ROOT/etc/rc"
+
+trap 'echo; . "$ROOT/etc/rc.shutdown"' 2
+
+sleep infinity
