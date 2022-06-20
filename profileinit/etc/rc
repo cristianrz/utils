@@ -11,7 +11,9 @@ services="$(find "$service_dir" -type f | sort)"
 for service in $services; do
 	service_short="$(basename "$service")"
 
-	case "$(eval 'echo $'"$service_short")" in
+	eval "do=\$${service_short}"
+
+	case "$do" in
 	YES)
 		set -- start
 		. "$service"
