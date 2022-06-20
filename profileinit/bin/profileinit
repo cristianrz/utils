@@ -7,6 +7,9 @@ ROOT="$PWD" export ROOT
 
 . "$ROOT/etc/rc"
 
-trap 'echo; . "$ROOT/etc/rc.shutdown"' 2
+trap 'echo; . "$ROOT/etc/rc.shutdown"; exec "$ROOT/bin/profileinit"' 2
+trap 'echo; . "$ROOT/etc/rc.shutdown"' 10
 
-sleep infinity
+# unless we do this, it doesn't react to SIGUSR1
+sleep infinity &
+wait
