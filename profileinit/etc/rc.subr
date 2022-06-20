@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+
+find_process(){
+	ps -o "pid,args" -A | while read -r pid args; do
+		case "$args" in
+			"$*") echo "$pid" ;;
+			*) continue ;;
+		esac
+	done
+}
+
