@@ -1,17 +1,21 @@
 #!/bin/sh
 # example daemon
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")" || exit 1
+
+#ps -o ppid= -p $(/bin/sh -c 'ps -p $$ -o ppid=')
 
 trap 'kill -15 $pid' 15
 
 case "x$1" in
-	x-D)
-		sleep 999 &
-		pid="$!"
-		wait
-		;;
-	*)
-		nohup "$PWD/sleepd" -D >/dev/null 2>&1 &
-		;;
+x-D)
+	#ps -o ppid= -p $(/bin/sh -c 'ps -p $$ -o ppid=')
+	sleep 999 &
+	pid="$!"
+	wait
+	;;
+*)
+	#ps -o ppid= -p $(/bin/sh -c 'ps -p $$ -o ppid=')
+	"$PWD/sleepd" -D &
+	;;
 esac
