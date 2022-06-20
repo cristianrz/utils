@@ -1,0 +1,17 @@
+#!/bin/sh
+# example daemon
+
+cd "$(dirname "$0")"
+
+trap 'kill -15 $pid' 15
+
+case "x$1" in
+	x-D)
+		sleep 999 &
+		pid="$!"
+		wait
+		;;
+	*)
+		nohup "$PWD/sleepd" -D >/dev/null 2>&1 &
+		;;
+esac
