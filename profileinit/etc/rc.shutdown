@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-echo "Stopping all services"
+log "Stopping all services"
 
 if [ -z "${ROOT-}" ]; then
 	cd "$(dirname "$0")/.."
@@ -17,3 +17,5 @@ find "$service_dir" -type f | sort -r | while read -r service; do
 	set -- stop
 	. "$service"
 done
+
+log "shutdown complete"
