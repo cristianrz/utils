@@ -11,12 +11,14 @@ service_dir="$ROOT/etc/rc.d"
 . "$ROOT/etc/rc.conf"
 . "$ROOT/etc/rc.subr"
 
+log_file="$ROOT/var/log/profileinit/messages"
+
 services="$(find "$service_dir" -type f | sort)"
 
 for service in $services; do
 	service_short="$(basename "$service")"
 
-	eval "do=\$${service_short}"
+	eval "do=\${${service_short}-}"
 
 	case "$do" in
 	YES)
@@ -29,3 +31,5 @@ done
 if [ -f "$ROOT/etc/rc.local" ]; then
 	. "$ROOT/etc/rc.local"
 fi
+
+log "init complete"
