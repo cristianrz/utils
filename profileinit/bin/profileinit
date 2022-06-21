@@ -8,22 +8,21 @@ dirname="$(dirname "$0")"
 cd "$dirname"/.. || exit 1
 ROOT="$PWD" export ROOT
 
-. "$ROOT/etc/rc"
-
-restart() {
-	stop
+init_restart() {
+	init_stop
 	cd "$IDIR"
 	exec "$dirname/profileinit"
 }
 
-stop() {
+init_stop() {
 	kill -15 "$sleep_pid"
 	. "$ROOT/etc/rc.shutdown"
 }
 
-trap 'restart' 2
+trap 'init_restart' 2
+trap 'init_stop' 15
 
-trap 'stop' 15
+. "$ROOT/etc/rc"
 
 # unless we do this, it doesn't react all signals
 sleep infinity &
