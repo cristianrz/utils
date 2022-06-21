@@ -4,9 +4,8 @@ set -eu
 
 # find out what directory are we running from if it's not already set
 if [ -z "${ROOT-}" ]; then
-	cd "$(dirname "$0")"
-	HERE="$PWD"
-	ROOT="${ROOT:-$HERE/../..}"
+	cd "$(dirname "$0")"/../..
+	ROOT="$PWD"
 fi
 
 # name for logging purposes
