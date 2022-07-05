@@ -1,20 +1,20 @@
 #!/bin/sh
 
-_quiet(){
-    "$@" >/dev/null 2>&1
+_quiet() {
+	"$@" >/dev/null 2>&1
 }
 
-_log(){
-    printf '%s\n' "$*" >&2
+_log() {
+	printf '%s\n' "$*" >&2
 }
 
-_log_fatal(){
-    _log "$*"
-    exit 1
+_log_fatal() {
+	_log "$*"
+	exit 1
 }
 
 if ! _quiet type git; then
-    _log_fatal "git is not installed, exiting"
+	_log_fatal "git is not installed, exiting"
 fi
 
 printf 'where do you want userinit to be installed? [$HOME/.local]: '
@@ -25,8 +25,8 @@ TMP="$(mktemp -d)"
 case "$TMP" in
 '/tmp/tmp'*) : ;;
 *)
-    _log_fatal "mktemp didn't work, gave me this: '$TMP'"
-    ;;
+	_log_fatal "mktemp didn't work, gave me this: '$TMP'"
+	;;
 esac
 
 trap 'rm -rf $TMP' EXIT
@@ -39,7 +39,7 @@ mkdir -p "$dest"
 cp -r "$TMP/profileinit/bin" "$dest"
 cp -r "$TMP/profileinit/etc" "$dest"
 
-cat << EOF
+cat <<EOF
 ******************************************************************************
 
  All done. Now you can start userinit. There are several ways to start it:    
@@ -59,4 +59,3 @@ cat << EOF
 
 ******************************************************************************
 EOF
-
