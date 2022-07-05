@@ -6,7 +6,7 @@ cd "$(dirname "$0")" || exit 1
 case "x$1" in
 x-f)
 	logger -t sleepd "started sleeping for 999 seconds"
-	exec sleep 999 
+	exec sleep 999
 	;;
 *)
 	"$PWD/sleepd" -f &

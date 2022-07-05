@@ -8,6 +8,7 @@ HERE="$(
 )"
 
 RC="$HERE/../etc/rc.d"
+
 RC_CONF="$HERE/../etc/rc.conf"
 
 case "$#" in

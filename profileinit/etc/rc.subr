@@ -4,7 +4,7 @@ set -eu
 # log tag message
 #
 log() {
-	logger -t "profileinit" "$*"
+	logger -t "userinit: $*"
 	echo "$*"
 }
 
