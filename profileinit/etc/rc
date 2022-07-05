@@ -1,4 +1,5 @@
 #!/bin/sh
+
 set -eu
 
 if [ -z "${ROOT-}" ]; then
@@ -8,12 +9,12 @@ fi
 
 service_dir="$ROOT/etc/rc.d"
 
-. "$ROOT/etc/rc.conf"
 . "$ROOT/etc/rc.subr"
+. "$ROOT/etc/rc.conf"
 
-log_file="$ROOT/var/log/profileinit/messages"
+log_file="$ROOT/var/log/userinit/messages"
 
-services="$(find "$service_dir" -type f | sort)"
+services="$(awk -F'=' '/^#/ { next } { print $1 }' "$ROOT/etc/rc.conf")"
 
 for service in $services; do
 	service_short="$(basename "$service")"
@@ -23,7 +24,7 @@ for service in $services; do
 	case "$do" in
 	YES)
 		set -- start
-		. "$service"
+		. "$service_dir/$service"
 		;;
 	esac
 done
