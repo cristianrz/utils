@@ -23,12 +23,8 @@ make install
 that accept at least 4 arguments: start, stop, restart and status.
 2. Define the services to be started in `etc/rc.conf`. To enable
 `example-service`, add `example-service=YES`.
-3. Start all services with `bin/userinit`. If you want services to start on
-login on chroots or similar:
-
-```
-echo userinit >> "$HOME/.profile"
-```
+3. Start all services with `bin/userinit`. This will start in the foreground
+so it's suitable for cron @reboot, systemd, Windows tasks, etc.
 
 Services can be operated with:
 
