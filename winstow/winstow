@@ -1,0 +1,103 @@
+#!/bin/sh
+# Stow adaptation for Windows using junctions
+
+set -eu
+
+log() {
+	"$DEBUG" &&
+		echo "$(date +"%T.%3N") - $*" >&2 || true
+}
+
+error() {
+	echo "$PROGNAME: $*" >&2
+	exit 1
+}
+
+link() {
+	targetdir="$(dirname "$1")"
+	targetfile="$(basename "$1")"
+	cd "$targetdir" || exit 1
+	target_win="$(cmd.exe /c 'echo %cd%')\\$targetfile"
+
+	linkdir="$(dirname "$2")"
+	linkfile="$(basename "$2")"
+	cd "$linkdir" || exit 1
+	link_win="$(cmd.exe /c 'echo %cd%')\\$linkfile"
+
+	log cmd.exe /c "mklink /j \"$link_win\" \"$target_win\""
+	cmd.exe /c "mklink /j \"$link_win\" \"$target_win\""
+}
+
+DEBUG=false
+PROGNAME="$(basename "$0")"
+STOW="$(
+	cd "$(dirname "$0")"
+	pwd
+)"
+STOW="$STOW/$PROGNAME"
+
+log "stow being called with args: $*"
+
+STOWDIR="$(pwd)"
+case "$#" in
+1) ROOTDIR="$(
+	cd ..
+	pwd
+)" ;;
+2) ROOTDIR="$2" ;;
+*) error 'too many or not enough parameters' ;;
+
+esac
+
+case "x$1" in
+x-D)
+	error 'todo'
+	shift
+	cd "$1" || exit 1
+	# echo "I am in $(pwd)"
+	# ls
+	for i in *; do
+		link="$ROOTDIR/$i"
+		rm "$link"
+	done
+	;;
+*)
+	cd "$1" || exit 1
+	# echo "I am in $(pwd)"
+	# ls
+	log "looping through contents of $(pwd)"
+	for i in *; do
+		log "processing $i"
+		targetdir="$STOWDIR/$1"
+		target="$STOWDIR/$1/$i"
+
+		if [ -f "$target" ]; then
+			echo "$PROGNAME: can't create link to file $target" >&2 || true
+		else
+			link="$ROOTDIR/$i"
+			log "target is $target and link is $link"
+
+			if [ -f "$link" ]; then
+				log "$link already exists and it's a file"
+				exit 1
+			elif [ -d "$link" ]; then
+				log "$link already exists and it's a directory"
+
+				case "$(readlink "$link")" in
+				"$target")
+					log "$link is already pointing to $target" >&2
+					;;
+				*)
+					cd "$targetdir" || exit 1
+					log "I am now inside $(pwd)"
+					"$STOW" "$i" "$link"
+					;;
+				esac
+			else
+				log "$link does not exist, creating link"
+				link "$target" "$link"
+			fi
+		fi
+	done
+	;;
+esac
