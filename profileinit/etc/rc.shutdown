@@ -1,21 +1,22 @@
 #!/bin/sh
 set -eu
 
-log "Stopping all services"
-
 if [ -z "${ROOT-}" ]; then
 	cd "$(dirname "$0")/.."
 	ROOT="$PWD"
 fi
 
+. "$ROOT/etc/rc.subr"
+
+log "stopping all services"
+
 service_dir="$ROOT/etc/rc.d"
 
-# Should always be loaded already
-#. "$ROOT/etc/rc.subr"
+services="$(tac "$ROOT"/etc/rc.conf | awk -F'=' '/^#/ { next } { print $1 }')"
 
-find "$service_dir" -type f | sort -r | while read -r service; do
+for service in $services; do
 	set -- stop
-	. "$service"
+	. "$service_dir/$service"
 done
 
 log "shutdown complete"

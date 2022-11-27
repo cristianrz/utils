@@ -15,7 +15,7 @@ NAME="sleep"
 #PID_FILE="$ROOT/var/run/$name.pid"
 
 # process to monitor
-PEXP="/bin/sh $ROOT/bin/sleepd -D"
+PEXP="/bin/sh $ROOT/bin/sleepd -f"
 
 DAEMON="$ROOT/bin/sleepd"
 

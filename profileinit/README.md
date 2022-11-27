@@ -1,8 +1,8 @@
-# profileinit
+# userinit
 
 NetBSD-style service manager for small environments.
 
-`profileinit` allows service management in places where:
+`userinit` allows service management in places where:
 
 * can't use native `init` (e.g. `chroot`)
 * native `init` is a pain (e.g. `systemd`, Windows)
@@ -23,20 +23,16 @@ make install
 that accept at least 4 arguments: start, stop, restart and status.
 2. Define the services to be started in `etc/rc.conf`. To enable
 `example-service`, add `example-service=YES`.
-3. Start all services with `bin/profileinit`. If you want services to start on
-login on chroots or similar:
-
-```
-echo profileinit >> "$HOME/.profile"
-```
+3. Start all services with `bin/userinit`. This will start in the foreground
+so it's suitable for cron @reboot, systemd, Windows tasks, etc.
 
 Services can be operated with:
 
-* `profilectl start   example-service`
-* `profilectl stop    example-service`
-* `profilectl restart example-service`
-* `profilectl enable  example-service`
-* `profilectl disable example-service`
+* `userctl start   example-service`
+* `userctl stop    example-service`
+* `userctl restart example-service`
+* `userctl enable  example-service`
+* `userctl disable example-service`
 
 Or alternatively with `etc/rc.d/example-service [COMMAND]`
 
@@ -45,6 +41,5 @@ All running services can be stopped with `profileshutdown`.
 ## What it doesn't do and will never do
 
 * Restart failed services
-* Dependencies (scripts in `rc.d` will always run serially in alphabetical
-order, you can play with that)
+* Dependencies 
 

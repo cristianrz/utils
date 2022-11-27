@@ -7,7 +7,7 @@ set -eu
 cd "$(dirname "$0")"/..
 ROOT="$PWD" export ROOT
 
-PROFILEINIT="$(dirname "$0")/profileinit"
+PROFILEINIT="$(dirname "$0")/userinit"
 
 ps -o "pid,args" -A | while read -r pid cmd args; do
 	case "$PROFILEINIT" in

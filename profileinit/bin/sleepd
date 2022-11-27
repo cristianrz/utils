@@ -3,20 +3,12 @@
 
 cd "$(dirname "$0")" || exit 1
 
-#ps -o ppid= -p $(/bin/sh -c 'ps -p $$ -o ppid=')
-
-trap 'kill -15 $pid' 15
-
 case "x$1" in
-x-D)
-	#ps -o ppid= -p $(/bin/sh -c 'ps -p $$ -o ppid=')
-	logger -t sleepd "started sleepling for 999 seconds"
-	sleep 999 &
-	pid="$!"
-	wait
+x-f)
+	logger -t sleepd "started sleeping for 999 seconds"
+	exec sleep 999
 	;;
 *)
-	#ps -o ppid= -p $(/bin/sh -c 'ps -p $$ -o ppid=')
-	"$PWD/sleepd" -D &
+	"$PWD/sleepd" -f &
 	;;
 esac

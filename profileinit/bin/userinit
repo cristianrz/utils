@@ -2,21 +2,19 @@
 
 set -eu
 
-IDIR="$PWD"
-
-dirname="$(dirname "$0")"
-cd "$dirname"/.. || exit 1
-ROOT="$PWD" export ROOT
+ROOT="$(
+	cd $(dirname "$0")/..
+	echo "$PWD"
+)"
 
 init_restart() {
 	init_stop
-	cd "$IDIR"
-	exec "$dirname/profileinit"
+	exec "$ROOT/bin/userinit"
 }
 
 init_stop() {
-	kill -15 "$sleep_pid"
 	. "$ROOT/etc/rc.shutdown"
+	kill -15 "$sleep_pid"
 }
 
 trap 'init_restart' 2
@@ -27,4 +25,5 @@ trap 'init_stop' 15
 # unless we do this, it doesn't react all signals
 sleep infinity &
 sleep_pid="$!"
+echo will start sleeping now
 wait
