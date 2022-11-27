@@ -19,9 +19,9 @@ case "$1" in
 		echo "Starting profilecron daemon"
 		if [ -s "$PROFILECRON_PID_FILE" ]; then
 			echo "apparently already running"
-			exit 0
+		else
+			profilecron_start
 		fi
-		profilecron_start
 		;;
 	stop)
 		echo "Stopping profilecron daemon"
@@ -38,7 +38,6 @@ case "$1" in
 	status)
 		if [ -s "$PROFILECRON_PID_FILE" ] && kill -0 "$(cat "$PROFILECRON_PID_FILE" 2>&1)" >/dev/null 2>&1; then
 			echo profilecron is running
-			exit 0
 		else
 			echo profilecron is not running
 			exit 1

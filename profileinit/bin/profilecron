@@ -14,7 +14,7 @@ HERE="$(
 	cd "$(dirname "$0")"
 	pwd
 )"
-CONFIG="$HERE/../../.config"
+CONFIG="$HERE/../etc"
 
 while true; do
 	min="$(date '+%M')"
@@ -23,27 +23,18 @@ while true; do
 	month="$(date '+%m')"
 	dow="$(date '+%u')"
 
-	while read -r line; do
-		case "$line" in
+	while read -r min_c hour_c dom_c month_c dow_c command; do
+		case "$min_c" in
 		'#'*) continue ;;
 		esac
 
-		set -f
-		set -- $line
-		set +f
+		match "$min_c" "$min" || continue
+		match "$hour_c" "$hour" || continue
+		match "$dom_c" "$dom" || continue
+		match "$month_c" "$month" || continue
+		match "$dow_c" "$dow" || continue
 
-		match "$1" "$min" || continue
-		shift
-		match "$1" "$hour" || continue
-		shift
-		match "$1" "$dom" || continue
-		shift
-		match "$1" "$month" || continue
-		shift
-		match "$1" "$dow" || continue
-		shift
-
-		"$@" &
+		eval "$command" &
 	done <"$CONFIG"/crontab
 
 	sleep 60
